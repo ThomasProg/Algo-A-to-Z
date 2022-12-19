@@ -6,8 +6,7 @@ chapter = true
 pre = "<b>X. </b>"
 +++
 
-### Chapter X
+# Algorithms
 
-# Some Chapter title
-
-Lorem Ipsum. 
+This repository contains a list of algorithms.\
+Each algorithm has explainations and an associated code.
