@@ -6,7 +6,7 @@ chapter = false
 pre = "<b>4. </b>"
 +++
 
-<h2> Projecting a point </h2>
+## Projecting a point
 
 The dot product can be used to project a point on an axis.
 {{< tabs >}}
@@ -18,7 +18,7 @@ def ProjectPointOnAxis(point, axis) -> float:
 {{% /tab %}}
 {{< /tabs >}}
 
-<h3> 2D Dot Product </h3>
+### 2D Dot Product
 
 {{< tabs >}}
 {{% tab name="Python" %}}
@@ -29,7 +29,7 @@ def DotProduct(v1, v2) -> float:
 {{% /tab %}}
 {{< /tabs >}}
 
-<h3> 3D Dot Product </h3>
+### 3D Dot Product
 
 {{< tabs >}}
 {{% tab name="Python" %}}
@@ -40,7 +40,7 @@ def DotProduct(v1, v2) -> float:
 {{% /tab %}}
 {{< /tabs >}}
 
-<h3> Dot Product Generalization </h3>
+### Dot Product Generalization
 
 {{< tabs >}}
 {{% tab name="Python" %}}
@@ -55,11 +55,11 @@ def DotProduct(v1, v2) -> float:
 {{% /tab %}}
 {{< /tabs >}}
 
-<h2> Projecting a circle, sphere, or hypersphere </h2>
+## Projecting a circle, sphere, or hypersphere 
 
-To simulate an hypersphere, we usually make models with a lot of triangles and vertices.</br>
-This is one of the best ways we know to render hyperspheres with other objects.</br>
-However, for collisions, we do not need this representation, since it only makes the performance worse.</br>
+To simulate an hypersphere, we usually make models with a lot of triangles and vertices.\
+This is one of the best ways we know to render hyperspheres with other objects.\
+However, for collisions, we do not need this representation, since it only makes the performance worse.\
 Instead, we can just use the mathematical properties of the hypersphere and have O(1) performance.
 
 {{< tabs >}}
@@ -77,9 +77,9 @@ def ProjectSphereOnAxis(hyperSphere: HyperSphere, axis: Vector) -> Range:
 {{% /tab %}}
 {{< /tabs >}}
 
-<h2> Projecting a polygon </h2>
+## Projecting a polygon 
 
-Mostly used shapes are models composed of vertices.</br>
+Mostly used shapes are models composed of vertices.\
 The projection of all the points of an edge is equal to the range of the projection of its two vertices.
 
 {{< tabs >}}
@@ -102,24 +102,24 @@ def ProjectShapeOnAxis(shape: Shape, axis: Vector) -> Range:
 {{% /tab %}}
 {{< /tabs >}}
 
-<h2> Projecting a 2D convex polygon </h2>
+## Projecting a 2D convex polygon 
 
-<h3> The extremum properties </h3>
+### The extremum properties 
 
-<h4> Definitions </h4>
+#### Definitions 
 
-Let S(t) be the parametric equation of a convex shape.</br> 
-It returns a point of the shape for a given t.</br>
-</p>
-Let P(t) = DotProduct(S(t), axis).</br>
-P(t) is the projection of the points of that shape on a given axis.</br>
-</p>
-Example : </br>
-S(t) = r * cos(t) * i + r * sin(t) * j </br>
+Let S(t) be the parametric equation of a convex shape.\ 
+It returns a point of the shape for a given t.
+
+Let P(t) = DotProduct(S(t), axis).\
+P(t) is the projection of the points of that shape on a given axis.
+
+Example : \
+S(t) = r * cos(t) * i + r * sin(t) * j \
 S(t) represents a circle with a radius of r, centered around the origin.
  
 
-<h4> Properties of S(t) </h4>
+#### Properties of S(t) 
 
 {{< tabs groupId="Continuous1" >}}
 {{% tab name="Continuous" %}}
@@ -132,7 +132,7 @@ i.e. : if we choose a point and follow the line, we end up looping and coming ba
 {{% /tab %}}
 {{< /tabs >}}
 
-<h4> Properties of P(t) </h4>
+#### Properties of P(t) 
 
 {{< tabs groupId="Continuous2" >}}
 {{% tab name="Continuous" %}}
@@ -160,10 +160,10 @@ Every local minimum of P(t) is equal to the minimum of P(t).
 
 {{< /tabs >}}
 
-<h3> Dichotomy </h3>
+### Dichotomy 
 
 As we saw before, once we find the extremum, we do not have to test the other vertices anymore.
-</br>
+
 The projections are also continuous, and there are only 2 extremums, so:
 
 {{< tabs >}}
@@ -266,83 +266,53 @@ However, in practice, there are only a few games that have that many vertices in
 Due to the different checks, this algorithm is sure to be less optimized for a few amount of vertices.
 {{% /notice %}}
 
-<h3> Examples : </h3>
-<div class="row" style="display:flex">
-    <div class="column" style="padding:10px;">
-        <img src="Step1.png" alt="Snow" style="width:100%">
-        <figcaption>
-            <h4>A convex shape, with a first and a last vertex</h4>
-        </figcaption>
-    </div>
-    <div class="column" style="padding:10px;">
-        <img src="Step2.png" alt="Forest" style="width:100%">
-        <figcaption>
-            <h4>A vertex is chosen. There are as many vertices on the right as on the left. </h4>
-        </figcaption>
-    </div>
-    <div class="column" style="padding:10px;">
-        <img src="Step3.png" alt="Mountains" style="width:100%">
-        <figcaption>
-            <h4>We project the first vertex and the chosen vertex on the axis</h4>
-        </figcaption>
-    </div>
-    <div class="column" style="padding:10px;">
-        <img src="Step4.png" alt="Mountains" style="width:100%">
-        <figcaption>
-            <h4>We select the vertex with the minimum projection, and evaluate in which direction the real minimum projection is</h4>
-        </figcaption>
-    </div>
-    <div class="column" style="padding:10px;">
-        <img src="Step5.png" alt="Mountains" style="width:100%">
-        <figcaption>
-            <h4>We take the part of the circle between the first vertex and the chosen vertex that is in the direction of the minimum</h4>
-        </figcaption>
-    </div>
-    <div class="column" style="padding:10px;">
-        <img src="Step6.png" alt="Mountains" style="width:100%">
-        <figcaption>
-            <h4>We repeat the algorithm, with the chosen vertex being the new last one</h4>
-        </figcaption>
-    </div>
-</div>
+### Examples : 
 
-<div class="row" style="display:flex">
-    <div class="column" style="padding:10px">
-        <img src="eStep1.png" alt="Snow" style="width:100%">
-        <figcaption>
-            <h4>A convex shape, that has a lot of vertices at one place</h4>
-        </figcaption>
-    </div>
-    <div class="column" style="padding:10px">
-        <img src="eStep2.png" alt="Forest" style="width:100%">
-        <figcaption>
-            <h4>We project the vertices ; the chosen vertex has the minimal projection</h4>
-        </figcaption>
-    </div>
-    <div class="column" style="padding:10px">
-        <img src="eStep3.png" alt="Mountains" style="width:100%">
-        <figcaption>
-            <h4>We compute the direction of the real minimal projection</h4>
-        </figcaption>
-    </div>
-    <div class="column" style="padding:10px">
-        <img src="eStep4.png" alt="Mountains" style="width:100%">
-        <figcaption>
-            <h4>We keep the part of the circle that was in that direction, and repeat</h4>
-        </figcaption>
-    </div>
-</div>
+{{< align >}}
+{{% box %}}
+![Schema](Step1.png "A convex shape, with a first and a last vertex")
+{{% /box %}}
+{{% box %}}
+![Schema](Step2.png "A vertex is chosen. There are as many vertices on the right as on the left")
+{{% /box %}}    
+{{% box %}}
+![Schema](Step3.png "We project the first vertex and the chosen vertex on the axis")
+{{% /box %}}     
+{{% box %}}
+![Schema](Step4.png "We select the vertex with the minimum projection, and evaluate in which direction the real minimum projection is")
+{{% /box %}}    
+{{% box %}}
+![Schema](Step5.png "We take the part of the circle between the first vertex and the chosen vertex that is in the direction of the minimum")
+{{% /box %}}     
+{{% box %}}
+![Schema](Step6.png "We repeat the algorithm, with the chosen vertex being the new last one")
+{{% /box %}}     
+{{< /align >}}
+
+{{< align >}}
+{{% box %}}
+![Schema](eStep1.png "A convex shape, that has a lot of vertices at one place")
+{{% /box %}}
+{{% box %}}
+![Schema](eStep2.png "We project the vertices ; the chosen vertex has the minimal projection")
+{{% /box %}}      
+{{% box %}}
+![Schema](eStep3.png "We compute the direction of the real minimal projection")
+{{% /box %}}     
+{{% box %}}
+![Schema](eStep4.png "We keep the part of the circle that was in that direction, and repeat")
+{{% /box %}}      
+{{< /align >}}
 
 
-<h3> Projecting an arbitrary 2D shape </h3>
+### Projecting an arbitrary 2D shape 
 
-<h4> The brute force way </h4>
+#### The brute force way 
 
-An arbitrary shape can be constructed with the function S(t), described above. </br>
-The brute force way of projecting the shape is just to project every point returned by that function. </br>
-Of course, it is impossible to project every point. </br>
+An arbitrary shape can be constructed with the function S(t), described above. \
+The brute force way of projecting the shape is just to project every point returned by that function. \
+Of course, it is impossible to project every point. \
 That is why we set a precision.
-</p>
 
 {{% notice info %}}
 This method does not return the exact projection of the shape, but it is the best we can do without any more precisions on the shape.
@@ -372,14 +342,14 @@ def ProjectShapeOnAxis(shape: Shape, axis: Vector, precision: int) -> Range:
 {{% /tab %}}
 {{< /tabs >}}
 
-<h4> The smarter way </h4>
+#### The smarter way 
 
-Being a convex shape, the same algorithm applied in the Dichotomy section can be used.</br>
-vertices[i] will be replaced by S(t).</br>
-Instead of adding 1 to the index, we will add a very small value to t.</br>
-Same for removing it.</br>
-We could also compute the derivative of P(t) to determine the direction, if possible.</br>
-Also, a maximum depth will be used instead of a precision to prevent infinite recursion.</br>
+Being a convex shape, the same algorithm applied in the Dichotomy section can be used.\
+vertices[i] will be replaced by S(t).\
+Instead of adding 1 to the index, we will add a very small value to t.\
+Same for removing it.\
+We could also compute the derivative of P(t) to determine the direction, if possible.\
+Also, a maximum depth will be used instead of a precision to prevent infinite recursion.
 
 {{% notice info %}}
 This method does not return the exact projection of the shape either. 

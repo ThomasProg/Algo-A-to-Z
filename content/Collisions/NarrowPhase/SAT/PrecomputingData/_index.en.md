@@ -6,12 +6,12 @@ chapter = false
 pre = "<b>6. </b>"
 +++
 
-<h2> Testing the same shape multiple times </h2>
+## Testing the same shape multiple times 
 
-Let's supposed we test 1 shape with 10 other shapes. </br>
-Every time we will test a collision, we will project the 1st shape onto the axes. </br>
-However, half of the axes will stay the same, because half of the axes will be computed from that 1st shape.</br>
-That means we can precompute both the axes, but also the projections of the shape on half of the axes between the broadphase and the narrow phase.</br>
+Let's supposed we test 1 shape with 10 other shapes. \
+Every time we will test a collision, we will project the 1st shape onto the axes. \
+However, half of the axes will stay the same, because half of the axes will be computed from that 1st shape. \
+That means we can precompute both the axes, but also the projections of the shape on half of the axes between the broadphase and the narrow phase.
 
 {{% notice warning %}}
 The previous algorithm would have returned as soon as it detects there are no collisions.
@@ -20,15 +20,13 @@ By precomputing this data, we asssume shapes most likely collide to be efficient
 This is one of the reasons the broadphase is so important. Otherwise, it could end up taking more performance instead.
 {{% /notice %}}
 
-<h2> Static Objects </h2>
+## Static Objects 
 
-When objects are moving, we have to compute axes in world space again every frame. </br>
-However, when objects are not moving (i.e. static), their world position do not change.</br>
-That means the following won't change:</br>
-<ul>
-<li>half of the axes</li>
-<li>the projections of the shape on these axes </li>
-</ul>
+When objects are moving, we have to compute axes in world space again every frame.\
+However, when objects are not moving (i.e. static), their world position do not change.\
+That means the following won't change:
+- half of the axes
+- the projections of the shape on these axes 
 
 We can cache that data.
 
@@ -40,7 +38,7 @@ Precomputing everything would cost a lot of memory, for collisions that might ne
 To optimize that, we could use world partitioning and only load / compute this data when getting close to the associated object. 
 {{% /notice %}}
 
-<h2> Caching the separating axis </h2>
+## Caching the separating axis
 
 You can save the separating axis for a pair for the next frame.\
 That way, at the next frame, you can test if that separating axis is still valid, and potentially have O(1) complexity.

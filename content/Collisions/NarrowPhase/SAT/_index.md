@@ -7,16 +7,8 @@ pre = "<b>> </b>"
 tags = ["Collisions", "Narrow Phase", "Geometry"] 
 +++
 
-<div id="chapter">
-<h1>
-Separating Axis Theorem
-</h1>
-</div>
+# Separating Axis Theorem
 
-<h2>
-Summary : 
-</h2>
+## Summary : 
 
-<h3>
-{{% children  %}}
-</h3> 
+{{% children  %}} 

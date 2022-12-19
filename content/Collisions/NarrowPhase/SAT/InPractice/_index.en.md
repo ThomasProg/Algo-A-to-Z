@@ -6,10 +6,10 @@ chapter = false
 pre = "<b>2. </b>"
 +++
 
-<h2> The brute force way </h2>
+## The brute force way
 
-We can project these shapes on every axis imaginable. </br>
-If on one axis, the projections do not overlap, then there are no collisions. </br>
+We can project these shapes on every axis imaginable. \
+If on one axis, the projections do not overlap, then there are no collisions. \
 Otherwise, there is a collision.
 
 {{< tabs >}}
@@ -55,12 +55,12 @@ def TestCollisionsWithSAT(shape1: Shape, shape2: Shape) -> bool
 {{% /tab %}}
 {{< /tabs >}}
 
-<code>Vector</code> can be a 2D vector or a 3D vector depending on the dimension you are implementing the algorithm in. 
-</p>
+*Vector* can be a 2D vector or a 3D vector depending on the dimension you are implementing the algorithm in. 
+
 <code>ProjectOnAxis()</code> can vary and be optimized depending on the implentation of Shape. 
-</p>
+
 <code>GetEveryAxisInTheWholeWorld()</code> returns a list of every axis possibly existing (which will, of course, be a bottleneck).
-</p>
+
 The implementation of <code>Range</code> and <code>DoRangesOverlap</code> is pretty straight forward:
 
 {{< tabs >}}
@@ -117,16 +117,9 @@ public class Range
 {{% /tab %}}
 {{< /tabs >}}
 
-<h2> The smarter way </h2>
+## The smarter way 
 
-</p>
-<code>GetEveryAxisInTheWholeWorld()</code> will, of course, make the algorithm too slow to be used. </br>
-However, we actually don't have to check <b>every</b> axis.
-</p>
-Let's assume our shapes are polygons.</br>
-In 2D, one of the straight lines separating the shapes will always be tangeant to a side of a shape.</br>
-In 3D, one of the planes separating the shapes will always be tangeant to a face of a shape.</br>
-In whatever dimension, one of the hyperplanes separating the shapes will always be tangeant to a face of a shape.</br>
-
-
-
+*GetEveryAxisInTheWholeWorld()* will, of course, make the algorithm too slow to be used. \
+However, we actually don't have to check **every** axis.\
+*ProjectOnAxis()* can also be optimized.\
+More informations on that in the next chapters.
