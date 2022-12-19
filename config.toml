@@ -32,7 +32,7 @@ url = "/tags"
 weight = 30
 
 [params]
-  themeVariant = [ "relearn-light", "relearn-dark", "progz"]
+  themeVariant = [ "light-theme", "dark-theme", "neon-theme"]
 
 disableLandingPageButton = true
 
