@@ -1,0 +1,41 @@
++++
+title = "Narrow Phase"
+date = 2022-12-11T17:14:18+01:00
+weight = 5
+chapter = false
+pre = "<b>> </b>"
++++
+
+<div id="chapter">
+<h1>
+Narrow Phase
+</h1>
+</div>
+
+<h2> Définition : </h2>
+La <b>narrow phase</b> est la partie où les collisions entre les formes sont testées avec leur <b>réelle géometrie</b>. 
+<br>
+Cela veut aussi dire que ces collisions sont <b>précises</b>, mais aussi <b>lourdes en performance</b>.
+
+</p>
+
+La <b>façon brute</b> de faire les choses serait de tester tous les triangles entre eux. <br>
+Cependant, cela serait <b>trop lent</b>.
+
+</p>
+
+Des algorithmes ont été créés pour rendre ça plus <b>rapide</b>. <br>
+La plupart d'entre eux utilisent les <b>propertiés</b> des <b>formes convexes</b>.
+
+<hr />
+
+<h2> Conditions requises : </h2>
+
+Pour que cette phase soit utile, elle doit :
+<ul style="margin: 0px">
+    <li>Le <b>point</b> de collision</li>
+    <li>La <b>normale</b> de l'impact</li>
+    <li>La <b>distance de pénétration</b> entre les deux formes</li>
+</ul>
+</p>
+Sans cela, on ne serait pas capable de faire une <b>réponse de collision</b> convenable après coup.

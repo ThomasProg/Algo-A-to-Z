@@ -1,0 +1,38 @@
+baseURL = 'https://thomasprog.github.io/Algo-A-to-Z/'
+canonifyURLs = true
+relativeURLs = true
+
+languageCode = 'en-us'
+title = 'Algo A to Z'
+theme = 'hugo-theme-relearn'
+
+# For search functionality
+[outputs]
+home = [ "HTML", "RSS", "JSON", "SEARCH", "SEARCHPAGE"]
+
+# English is the default language
+defaultContentLanguage = "en"
+# Force to have /en/my-page and /fr/my-page routes, even for default language.
+defaultContentLanguageInSubdir = true
+
+[Languages]
+[Languages.en]
+title = "Documentation for Hugo Learn Theme"
+weight = 1
+languageName = "English"
+
+[Languages.fr]
+title = "Documentation du thème Hugo Learn"
+weight = 2
+languageName = "Français"
+
+[[menu.shortcuts]]
+name = "<i class='fas fa-tags'></i> Tags"
+url = "/tags"
+weight = 30
+
+[params]
+  themeVariant = [ "relearn-light", "relearn-dark", "progz"]
+
+disableLandingPageButton = true
+

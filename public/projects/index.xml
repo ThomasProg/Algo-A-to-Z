@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Projects on Python A to Z</title>
+    <link>/Python-A-to-Z/projects/</link>
+    <description>Recent content in Projects on Python A to Z</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 11 Dec 2022 17:25:53 +0100</lastBuildDate><atom:link href="/Python-A-to-Z/projects/index.xml" rel="self" type="application/rss+xml" />
+  </channel>
+</rss>

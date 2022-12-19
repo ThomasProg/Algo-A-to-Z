@@ -1,0 +1,106 @@
++++
+title = "Theory"
+date = 2022-12-11T17:14:18+01:00
+weight = 1
+chapter = false
+pre = "<b>1. </b>"
++++
+
+<h2> Hyperplane Separation Theorem </h2>
+
+<h3> For 2D </h3>
+<b> Theorem: </b>
+If two convex shapes do not collide, then, a straight line can separate them.
+
+</br>
+
+<b> Contrapositive: </b>
+If two convex shapes collide, then, there is no straight line separating them.
+
+</br>
+
+<h3> For 3D </h3>
+<b> Theorem: </b>
+If two convex shapes do not collide, then, a plane can separate them.
+
+</br>
+
+<b> Contrapositive: </b>
+If two convex shapes collide, then, there is no plane separating them.
+
+<h3> Generalization for higher dimensions </h3>
+<b> Theorem: </b>
+If two convex shapes do not collide, then, a hyperplane can separate them.
+
+</br>
+
+<b> Contrapositive: </b>
+If two convex shapes collide, then, there is no hyperplane separating them.
+
+<h3> Examples : </h3>
+
+<div class="row" style="width:800px;display:flex">
+  <div class="column" style="padding:10px">
+    <img src="no_collisions.png" alt="Snow" style="width:100%">
+    <figcaption>
+        <h4>A straight line separates the shapes, so there are no collisions</h4>
+    </figcaption>
+  </div>
+  <div class="column" style="padding:10px">
+    <img src="collision.png" alt="Forest" style="width:100%">
+    <figcaption>
+        <h4>No straight line separates the shapes, so there is a collision</h4>
+    </figcaption>
+  </div>
+  <div class="column" style="padding:10px">
+    <img src="not_convex.png" alt="Mountains" style="width:100%">
+    <figcaption>
+        <h4>The shape on the right is not convex, the theorem doesn't work</h4>
+    </figcaption>
+  </div>
+</div>
+
+<hr />
+
+<h2> Separating Axis Theorem </h2>
+<h3> Definition : </h3>
+<b> Statement: </b> The line, plane, or hyperplane described above always has a normal axis. </br>
+<b> Theorem: </b> If the shapes are not colliding, the projections of the shapes on this axis do not overlap.</br>
+<b> Contrapositive: </b> If the shapes are colliding, then, no matter the axis we take, the projections of the shapes on this axis will overlap </br>
+{{% notice warning %}}
+Whether there are collisions or not, there will always exist an axis for which the projections of the shapes overlap. </br>
+{{% /notice %}}
+
+<h3> Examples : </h3>
+<div class="row" style="display:flex">
+    <div class="column" style="padding:10px">
+        <img src="Projection1.png" alt="Snow" style="width:100%">
+        <figcaption>
+            <h4>The separating straight line has a normal axis</h4>
+        </figcaption>
+    </div>
+    <div class="column" style="padding:10px">
+        <img src="Projection2.png" alt="Forest" style="width:100%">
+        <figcaption>
+            <h4>We project the shapes on the axis</h4>
+        </figcaption>
+    </div>
+    <div class="column" style="padding:10px">
+        <img src="Projection3.png" alt="Mountains" style="width:100%">
+        <figcaption>
+            <h4>Their projections do not overlap :</br> there are no collisions!</h4>
+        </figcaption>
+    </div>
+    <div class="column" style="padding:10px">
+        <img src="Projection4.png" alt="Snow" style="width:100%">
+        <figcaption>
+            <h4>No matter the axis we take, the projections overlap :</br> there is a collision!</h4>
+        </figcaption>
+    </div>
+    <div class="column" style="padding:10px">
+        <img src="Projection5.png" alt="Forest" style="width:100%">
+        <figcaption>
+            <h4>There is always an axis for which projections overlap</h4>
+        </figcaption>
+    </div>
+</div>
