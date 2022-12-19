@@ -195,6 +195,8 @@ Let's define hyperplanes dimensions:
 
 For simplicity, let H(N) be a N dimensional hyperplane.
 
+Instead of hyperplanes, we could say that H(N) is a subspace of dimension N - 1
+
 Let D be the dimension of the space.\
 We have to test:
 - H(D) / H(i), i <= D
@@ -208,8 +210,8 @@ We can just take the normal of H(D).
 
 #### H(i) / H(j)
 
-As long as the direct sum of H(i) and H(j) is equal to H(N), we can compute a vector orthogonal to both H(i) and H(j).\
-Otherwise, we can consider it as infinitesimal, and discard it.
+As long as the direct sum of H(i) and H(j) is equal to H(N), we probably can't discard that case.\
+Same as before, we need to compute the axis of the shortest path between the two hyperplanes.
 
 ## Parallel axes optimization
 
