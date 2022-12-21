@@ -2,4 +2,8 @@
 It means these collisions are precise, but also performance heavy.
 The brute way to do things would be to test every triangle against each other. However, that would be too slow.
 Algorithms have been created to make it faster. Most of them use the properties of convex shapes.
-Requirements: For this phase to be useful, it must return :</description></item></channel></rss>
+Requirements: For this phase to be useful, it must return :</description></item><item><title>Response</title><link>https://thomasprog.github.io/Algo-A-to-Z/collisions/response/index.html</link><pubDate>Sun, 11 Dec 2022 17:14:18 +0100</pubDate><guid>https://thomasprog.github.io/Algo-A-to-Z/collisions/response/index.html</guid><description> Response Summary: After detecting a collision, we need to move the shapes appropriately.
+If we&amp;rsquo;re using reality based physics, then we have to apply physics laws.
+In the following chapters, we will see how to update things appropriately.
+For the following chapters, we consider the narrow phase is returning a CollisionInfo:
+struct CollisionInfo { float mtv; // Minimum Translation Vector Vec3 collisionPoint; Vec3 normal; }; void RunPhysicalResponse(Shape* shape1, Shape* shape2, const CollisionInfo&amp;amp; collisionInfo) { } Index: Velocity Angular Velocity Correction</description></item></channel></rss>

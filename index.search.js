@@ -58,7 +58,15 @@ H(i) / H(j) As long as the direct sum of H(i) and H(j) is equal to H(N), we prob
 Same as before, we need to compute the axis of the shortest path between the two hyperplanes.
 Parallel axes optimization If two axes are parallel, then we only need to test with one of those.\\
 It is important for symetric shapes, such as rectangles, circles, spheres, etc.
-`,description:"",tags:null,title:"Get Projection Axes",uri:"/collisions/narrowphase/sat/getprojectionaxes/index.html"},{content:` Projecting a point The dot product can be used to project a point on an axis. Python def ProjectPointOnAxis(point, axis) -\u003e float: return DotProduct(point, axis); 2D Dot Product Python def DotProduct(v1, v2) -\u003e float: return v1.x * v2.x + v1.y * v2.y 3D Dot Product Python def DotProduct(v1, v2) -\u003e float: return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z Dot Product Generalization Python def DotProduct(v1, v2) -\u003e float: nbDimensions = v1.GetDimension() total = 0 for i in range(nbDimensions): total += v1.coords[i] * v2.coords[i] return total Projecting a circle, sphere, or hypersphere To simulate an hypersphere, we usually make models with a lot of triangles and vertices.
+`,description:"",tags:null,title:"Get Projection Axes",uri:"/collisions/narrowphase/sat/getprojectionaxes/index.html"},{content:" Velocity ",description:"",tags:null,title:"Velocity",uri:"/collisions/response/velocity/index.html"},{content:" Angular Velocity ",description:"",tags:null,title:"Angular Velocity",uri:"/collisions/response/angularvelocity/index.html"},{content:` The problem As we are simulating physics, and not actually doing it, there is an imprecision coming with the program.
+For example, the collision point is not going to be exactly on the intersection of the two shapes.
+After the collision has been detected, the two shapes would already be overlapping.
+The imprecision can be “corrected in a few ways.
+The goal of this page is to show you different ways of doing it.
+The easy way The easy way is just to reset the shapes back at the previous frame.
+void RunPhysicalResponse(const Shape* shape1, const Shape* shape2, const CollisionInfo\u0026 it) { shape1-\u003eposition = shape1-\u003elastPosition; shape1-\u003erotation = shape1-\u003elastRotation; shape2-\u003eposition = shape2-\u003elastPosition; shape2-\u003erotation = shape2-\u003elastRotation; } Pros:
+This gives stable Cons:
+This is not how real physics work `,description:"",tags:null,title:"Correction",uri:"/collisions/response/correction/index.html"},{content:` Projecting a point The dot product can be used to project a point on an axis. Python def ProjectPointOnAxis(point, axis) -\u003e float: return DotProduct(point, axis); 2D Dot Product Python def DotProduct(v1, v2) -\u003e float: return v1.x * v2.x + v1.y * v2.y 3D Dot Product Python def DotProduct(v1, v2) -\u003e float: return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z Dot Product Generalization Python def DotProduct(v1, v2) -\u003e float: nbDimensions = v1.GetDimension() total = 0 for i in range(nbDimensions): total += v1.coords[i] * v2.coords[i] return total Projecting a circle, sphere, or hypersphere To simulate an hypersphere, we usually make models with a lot of triangles and vertices.
 This is one of the best ways we know to render hyperspheres with other objects.
 However, for collisions, we do not need this representation, since it only makes the performance worse.
 Instead, we can just use the mathematical properties of the hypersphere and have O(1) performance.
@@ -99,7 +107,8 @@ After all this time, developers have found ways to simulate even more complex co
 Box2D is opensource and was made by Erin Catto, but is not 3D PhysX was made by NVidia, but was discontinued Bullet, a 3D opensource collision library Chaos, recently developed by Unreal Engine Havok, used by Nintendo, Ubisoft, and others, but being premium Jolt Physics, a new 3D opensource used Horizon Forbidden West And more… However, since the old days, new ways to represent shapes are being used:
 2D boxes, moving freely (example : Mario) 2D Sprite pixels, for pixel to pixel collisions Complex 2D shapes, with multiple points 3D triangles, the mainstream way to represent 3D models Sign Distance Functions, being mathematical expressions of a shape And even more… The way to handle collisions is still evolving. Some games also require custom collisions to be optimal.
 Example : Minecraft only requires collisions between boxes and cylinders. The collision between chunks don’t even have to be tested.
-References : https://dyn4j.org/2010/01/sat/
+How: The collisions will be implemented that way (unless if specified otherwise):
+struct ShapePair { Shape* shape1; Shape* shape2; }; class CollisionDetector { std::vector\u003cShape\u003e registeredShapes; BroadPhase broadPhase; NarrowPhase narrowPhase; void Register(const Shape\u0026 shape) { broadPhase.Register(shape); } void Unregister(const Shape\u0026 shape) { broadPhase.Unregister(shape); } void SimulateCollisions() { // A container of potentially colliding pairs // Could return a std::vector, std::list, etc auto\u0026 pairs = broadPhase.GetPotentiallyCollidingPairs(); for (ShapePair\u0026 pair : pairs) { CollisionInfo collisionInfo; if (narrowPhase.AreShapesColliding(pair.shape1, pair.shape2, collisionInfo)) { RunPhysicalResponse(pair.shape1, pair.shape2, collisionInfo); } } } }; References : https://dyn4j.org/2010/01/sat/
 `,description:"",tags:null,title:"Collisions",uri:"/collisions/index.html"},{content:`Definition : The narrow phase is
 Chapter 1 `,description:"",tags:null,title:"EPA",uri:"/collisions/narrowphase/gjk/epa/index.html"},{content:` Getting the collision normal Getting the collision normal is pretty straightforward.
 Indeed, the normal is the same as the separating axis.
@@ -118,7 +127,11 @@ The brute way to do things would be to test every triangle against each other. H
 Algorithms have been created to make it faster. Most of them use the properties of convex shapes.
 Requirements: For this phase to be useful, it must return :
 The point of collision The normal of the impact The penetrated distance between the two shapes Without that, we wouldn’t be able to make a proper collision response afterwards.
-`,description:"",tags:null,title:"Narrow Phase",uri:"/collisions/narrowphase/index.html"},{content:" Separating Axis Theorem Summary : Theory In practice Get Projection Axes Projecting Shapes Getting output data Precomputing data Is Inside ",description:"",tags:["Collisions","Narrow Phase","Geometry"],title:"SAT",uri:"/collisions/narrowphase/sat/index.html"},{content:` Testing the same shape multiple times Let’s supposed we test 1 shape with 10 other shapes. Every time we will test a collision, we will project the 1st shape onto the axes. However, half of the axes will stay the same, because half of the axes will be computed from that 1st shape. That means we can precompute both the axes, but also the projections of the shape on half of the axes between the broadphase and the narrow phase.
+`,description:"",tags:null,title:"Narrow Phase",uri:"/collisions/narrowphase/index.html"},{content:` Response Summary: After detecting a collision, we need to move the shapes appropriately.
+If we’re using reality based physics, then we have to apply physics laws.
+In the following chapters, we will see how to update things appropriately.
+For the following chapters, we consider the narrow phase is returning a CollisionInfo:
+struct CollisionInfo { float mtv; // Minimum Translation Vector Vec3 collisionPoint; Vec3 normal; }; void RunPhysicalResponse(Shape* shape1, Shape* shape2, const CollisionInfo\u0026 collisionInfo) { } Index: Velocity Angular Velocity Correction `,description:"",tags:null,title:"Response",uri:"/collisions/response/index.html"},{content:" Separating Axis Theorem Summary : Theory In practice Get Projection Axes Projecting Shapes Getting output data Precomputing data Is Inside Minkowski And SAT Minkowski And Axes ",description:"",tags:["Collisions","Narrow Phase","Geometry"],title:"SAT",uri:"/collisions/narrowphase/sat/index.html"},{content:` Testing the same shape multiple times Let’s supposed we test 1 shape with 10 other shapes. Every time we will test a collision, we will project the 1st shape onto the axes. However, half of the axes will stay the same, because half of the axes will be computed from that 1st shape. That means we can precompute both the axes, but also the projections of the shape on half of the axes between the broadphase and the narrow phase.
 Warning The previous algorithm would have returned as soon as it detects there are no collisions. This means less data could have been computed. By precomputing this data, we asssume shapes most likely collide to be efficient. This is one of the reasons the broadphase is so important. Otherwise, it could end up taking more performance instead.
 Static Objects When objects are moving, we have to compute axes in world space again every frame.
 However, when objects are not moving (i.e. static), their world position do not change.
@@ -132,4 +145,66 @@ C++ bool TestCollisionsWithSATOnAxis(const Shape\u0026 shape1, const Shape\u0026
 their respective projections will overlap on every axis If shape1 is not colliding with shape2, then :
 their respective projections will not overlap on atleast 1 axis If shape1 is inside shape2, then :
 the projection of shape1 will be included in the projection of shape2 on every axis If shape1 is not inside shape2, then :
-the projection of shape1 will not be included in the projection of shape2 on atleast 1 axis Examples Shape1 is inside shape2. The projection of shape1 is always included in the projection of shape2 Shape1 is not inside shape2. The projection of shape1 is not always included in the projection of shape2 The algorithm Python def IsShape1InsideShape2(shape1: Shape, shape2: Shape) -\u003e bool axes = GetAxes(shape1, shape2) for axis in axes: projection1 = shape1.ProjectOnAxis(axis) projection2 = shape2.ProjectOnAxis(axis) if not IsProj1InsideProj2(projection1, projection2): return False return True `,description:"",tags:null,title:"Is Inside",uri:"/collisions/narrowphase/sat/isinside/index.html"},{content:"",description:"",tags:null,title:"Collisions",uri:"/tags/collisions/index.html"},{content:"",description:"",tags:null,title:"Geometry",uri:"/tags/geometry/index.html"},{content:"",description:"",tags:null,title:"Narrow Phase",uri:"/tags/narrow-phase/index.html"},{content:"",description:"",tags:null,title:"Tags",uri:"/tags/index.html"},{content:"",description:"",tags:null,title:"Categories",uri:"/categories/index.html"}]
+the projection of shape1 will not be included in the projection of shape2 on atleast 1 axis Examples Shape1 is inside shape2. The projection of shape1 is always included in the projection of shape2 Shape1 is not inside shape2. The projection of shape1 is not always included in the projection of shape2 The algorithm Python def IsShape1InsideShape2(shape1: Shape, shape2: Shape) -\u003e bool axes = GetAxes(shape1, shape2) for axis in axes: projection1 = shape1.ProjectOnAxis(axis) projection2 = shape2.ProjectOnAxis(axis) if not IsProj1InsideProj2(projection1, projection2): return False return True `,description:"",tags:null,title:"Is Inside",uri:"/collisions/narrowphase/sat/isinside/index.html"},{content:` The basic SAT algorithm Let’s get back at the original SAT implementation.
+Note that the following works for every dimension.
+C++ struct Range { float min, max; }; bool DoRangesOverlap(const Range\u0026 range1, const Range\u0026 range2) { return range1.max \u003e range2.min \u0026\u0026 range2.max \u003e range1.min; } bool TestCollisionsWithSAT(const Shape\u0026 shape1, const Shape\u0026 shape2) { std::vector\u003cVector\u003e axes = GetEveryAxisInTheWholeWorld(); for (const Vector\u0026 axis : axes) { Range projection1 = shape1.ProjectOnAxis(axis); Range projection2 = shape2.ProjectOnAxis(axis); // if there is a separating hyperplane if (!DoRangesOverlap(projection1, projection2)) { // then there is no collision return false; } } return true; } Modifying the SAT From now on, we will start to changing parts of the code.
+However, even with modifications, the code will always be working the same as before.
+First, we will explicit ProjectOnAxis() :
+projection = shape.Project(axis); becomes
+float maxProj = shape.GetMaxProj(axis); float minProj = shape.GetMinProj(axis); Obviously, GetMinProj(axis) is equivalent to GetMaxProj(- axis).
+This is just the range, but explicited. Nothing unusual.
+For the sake of explanation, we can even get the point out of the functions.
+// The point with the max projection on axis Vector ptMaxProj = shape.GetPtMaxProj(axis); // The point with the min projection on axis Vector ptMinProj = shape.GetPtMinProj(axis); // projecting the points back one the axis, so we have the same values than before float maxProj = DotProduct(ptMaxProj, axis); float minProj = DotProduct(ptMinProj, axis); Now, we can:
+explicit DoRangesOverlap(), change the inequality and applying boolean logic replace the code And we get:
+C++ Vector ptMaxProj1 = shape.GetPtMaxProj(axis); Vector ptMinProj1 = shape.GetPtMinProj(axis); float maxProjShape1 = DotProduct(ptMaxProj1, axis); float minProjShape1 = DotProduct(ptMinProj1, axis); Vector ptMaxProj2 = shape.GetPtMaxProj(axis); Vector ptMinProj2 = shape.GetPtMinProj(axis); float maxProjShape2 = DotProduct(ptMaxProj2, axis); float minProjShape2 = DotProduct(ptMinProj2, axis); // if there is a separating hyperplane if (maxProjShape1 - minProjShape2 \u003c 0 || minProjShape1 - maxProjShape2 \u003e 0) { // then there is no collision return false; } Now, let’s replace:
+maxProjShape1 - minProjShape2 by:
+DotProduct(shape1.GetPtMaxProj(axis), axis) - DotProduct(shape2.GetPtMinProj(axis), axis) Now, let’s do a bit of simple maths:
+Let u, v and p be vectors of N dimension.
+We have:
+$$u \\cdot p - v \\cdot p$$ $$= \\sum (u_{i} * p_{i}) - \\sum (v_{i} * p_{i})$$ $$= \\sum (u_{i} * p_{i} - v_{i} * p_{i})$$ $$= \\sum ((u_{i} - v_{i}) * p_{i})$$It means that we can replace our the last code part by:
+Vector minkowskyPtWithMaxProj = shape1.GetPtMaxProj(axis) - shape2.GetPtMinProj(axis); float minkowskySumMaxProj = DotProduct(minkowskyPtWithMaxProj, axis); we just computed a point from the minkowskySum!!!!!!
+Or rather, if A and B are our shapes, the expression we have is A - B.
+We can now show the final code:
+C++ bool TestCollisionsWithSAT(const Shape\u0026 shape1, const Shape\u0026 shape2) { std::vector\u003cVector\u003e axes = GetEveryAxisInTheWholeWorld(); for (const Vector\u0026 axis : axes) { Vector minkowskyPtWithMaxProj = shape1.GetPtMaxProj(axis) - shape2.GetPtMinProj(axis); float minkowskySumMaxProj = DotProduct(minkowskyPtWithMaxProj, axis); // Note that this is the minimum projection instead of the maximum we just computed above Vector minkowskyPtWithMinProj = shape1.GetPtMinProj(axis) - shape2.GetMaxProj(axis); float minkowskySumMinProj = DotProduct(minkowskyPtWithMinProj, axis); // If 0 is outside the projection if (minkowskySumMaxProj \u003c 0 || minkowskySumMinProj \u003e 0) { return false; } } return true; } REVELATION!!!!!
+There was an imposter among us!
+And it was Minkowski!!!
+Let’s explain that.
+A different point of view We’re doing the minkowski sum A - B.
+If the shapes are overlapping, it means that there is atleast 1 point both shapes are sharing.
+In that case, for that point, A - B would return the origin, since the point from A and B would negate each other.
+So if there is a collision, the origin should be inside the minkowski shape!
+However, that just delays the problem…
+The minkowski shape is convex since both A and B are convex.
+A point is, in itself, convex.
+Is there an algorithm capable of determining if there is a collision between 2 convex shapes?
+Yes!!
+The Separating Axis Theorem is!!!
+C++ bool TestCollisionsWithSAT(const Shape\u0026 shape1, const Shape\u0026 shape2) { std::vector\u003cVector\u003e axes = GetEveryAxisInTheWholeWorld(); Shape minkowskySum = shape1 - shape2; for (const Vector\u0026 axis : axes) { // The projection of the origin is 0 on any axis // So if the projection of the origin is not in projection of the Minkowski shape: if (minkowskySum.GetPtMaxProj(axis) \u003c 0 || minkowskySum.GetPtMinProj(axis) \u003e 0) { return false; } } return true; } Note that this code is still doing the same thing as what we had before.
+Here, the minkowsky shape is just computed before the loop, and then projecting it, instead of getting the projections on the fly.
+The condition also became very straightforward.
+Conclusion Let A and B be two closed convex shapes.
+We just proved that:
+“If two convex shapes do not collide, then, a hyperplane can separate them.”
+Is strictly equivalent to:
+“If the shapes are not colliding, then, the origin is inside the minkowsky sum A - B.”
+And a convex shape is defined by its tangent hyperplanes.
+So we can just verify if the origin is “inside” the hyperplanes.
+That proof works for any euclidean space!!!
+`,description:"",tags:null,title:"Minkowski And SAT",uri:"/collisions/narrowphase/sat/minkowskiandsat/index.html"},{content:` The basic SAT algorithm We saw previously that the SAT could be explained using the Minkowski sum.
+C++ bool TestCollisionsWithSAT(const Shape\u0026 shape1, const Shape\u0026 shape2) { std::vector\u003cVector\u003e axes = GetEveryAxisInTheWholeWorld(); Shape minkowskySum = shape1 - shape2; for (const Vector\u0026 axis : axes) { // The projection of the origin is 0 on any axis // So if the projection of the origin is not in projection of the Minkowski shape: if (minkowskySum.GetPtMaxProj(axis) \u003c 0 || minkowskySum.GetPtMinProj(axis) \u003e 0) { return false; } } return true; } The algorithm isn’t usable as it is, since GetEveryAxisInTheWholeWorld() is slow… and even slower for higher dimensions.
+However, do you remember how we previously got the axes the 2D case, by just taking the normals?
+It doesn’t usually work in higher dimensions for two convex shapes…
+However It does work here.
+The same as previously, we want to know the shortest path the shape and the point.
+However, in the case, there is only one case possible: the path will always be a normal of the shape!
+Code : The obvious way To replace GetEveryAxisInTheWholeWorld(), we can just do the following:
+C++ bool TestCollisionsWithSAT(const Shape\u0026 shape1, const Shape\u0026 shape2) { Shape minkowskySum = shape1 - shape2; std::vector\u003cVector\u003e axes = minkowskySum.GetNormals(); for (const Vector\u0026 axis : axes) { // The projection of the origin is 0 on any axis // So if the projection of the origin is not in projection of the Minkowski shape: if (minkowskySum.GetPtMaxProj(axis) \u003c 0 || minkowskySum.GetPtMinProj(axis) \u003e 0) { return false; } } return true; } However, the problem with that is that we have to compute the sum of minkowsky.
+The obvious way would be to compute possible points and then to create a convex hull around them.
+A convex hull can be created for any dimension with the QuickHull algorithm.
+It would then look like this:
+C++ Shape MinkowskySum(const Shape\u0026 shape1, const Shape\u0026 shape2) { std::vector\u003cPoints\u003e points; std::vector\u003cPoints\u003e\u0026 vertices1 = shape1.GetVertices(); std::vector\u003cPoints\u003e\u0026 vertices2 = shape2.GetVertices(); points.reserve(vertices1.size() + vertices2.size()); for (const Vector\u0026 vertexPos1 : vertices1) { for (const Vector\u0026 vertexPos2 : vertices2) { points.push_back(vertexPos1, vertexPos2); } } return Shape(QuickHull(points)); } Optimizing We could try using the property of convex shapes to :
+reduce the number of points as the source of the convex hull compute the convex hull even faster with a different algorithm (or maybe even directly) Another thing we could do is, rather than computing the convex hull, we could try directly computing the normals.
+After all, that’s what we are doing already in 2D and in 3D.
+These possible optimizations have not been proven yet, and it’s not sure it is actually possible.
+But the inverse is also true.
+`,description:"",tags:null,title:"Minkowski And Axes",uri:"/collisions/narrowphase/sat/minkoswkiandaxes/index.html"},{content:"",description:"",tags:null,title:"Collisions",uri:"/tags/collisions/index.html"},{content:"",description:"",tags:null,title:"Geometry",uri:"/tags/geometry/index.html"},{content:"",description:"",tags:null,title:"Narrow Phase",uri:"/tags/narrow-phase/index.html"},{content:"",description:"",tags:null,title:"Tags",uri:"/tags/index.html"},{content:"",description:"",tags:null,title:"Categories",uri:"/categories/index.html"}]
