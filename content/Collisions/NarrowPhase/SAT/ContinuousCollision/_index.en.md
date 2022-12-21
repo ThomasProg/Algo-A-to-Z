@@ -52,8 +52,10 @@ bool SimulatePhysics(Shape& shape1, Shape& shape2, CollisionInfo& collisionInfo)
         // we want the positive value, since the negative value would be for the future        
         float t = (t1 > 0) ? t1 : t2;
 
-        shape1.position -= t * shape1.velocity;
-        shape2.position -= t * shape2.velocity; 
+        shape1.position = lerp(shape1.position, shape1.lastPosition, t);
+        shape2.position = lerp(shape2.position, shape2.lastPosition, t);
+        shape1.rotation = lerp(shape1.rotation, shape1.lastRotation, t);
+        shape2.rotation = lerp(shape2.rotation, shape2.lastRotation, t);
 
         // We know get:
         collisionInfo.hitNormal = satCollisionInfo.hitNormal;

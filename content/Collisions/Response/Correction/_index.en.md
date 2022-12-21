@@ -14,13 +14,13 @@ After the collision has been detected, the two shapes would already be overlappi
 The imprecision can be "corrected in a few ways.\
 The goal of this page is to show you different ways of doing it.
 
-## The easy way
+## Reset the shapes transform
 
 The easy way is just to reset the shapes back at the previous frame.
 
 ```cpp
 
-void RunCorrection(const Shape* shape1, const Shape* shape2, const CollisionInfo& it)
+void RunCorrection(const Shape* shape1, const Shape* shape2, const CollisionInfo& collisionInfo)
 {
     shape1->position = shape1->lastPosition;
     shape1->rotation = shape1->lastRotation;
@@ -33,9 +33,22 @@ void RunCorrection(const Shape* shape1, const Shape* shape2, const CollisionInfo
 ```
 
 Pros:
-- This gives stable
+- This gives stable results
 
 Cons:
 - This is not how real physics work
 
+## Move the shapes back at the collision point
 
+void RunCorrection(const Shape& shape1, const Shape& shape2, const CollisionInfo& collisionInfo)
+{
+    float t = 1 - collisionInfo.mvt / Distance(shape1.lastPosition,shape1.position);
+
+    shape1.position = lerp(shape1.position, shape1.lastPosition, t);
+    shape2.position = lerp(shape2.position, shape2.lastPosition, t);
+    shape1.rotation = lerp(shape1.rotation, shape1.lastRotation, t);
+    shape2.rotation = lerp(shape2.rotation, shape2.lastRotation, t);
+
+}
+
+This is the equivalent to [The first part of NarrowPhase/SAT/ContinuousCollision]( {{< ref "../../NarrowPhase/SAT/ContinuousCollision/_index.en.md#Continuous-collision-for-non-rotating-shapes" >}} ) 

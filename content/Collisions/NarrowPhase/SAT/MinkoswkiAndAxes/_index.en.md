@@ -87,7 +87,7 @@ It would then look like this:
 {{< tabs >}}
 {{% tab name="C++" %}}
 ```cpp
-Shape MinkowskiSum(const Shape& shape1, const Shape& shape2)
+Shape MinkowskiDiff(const Shape& shape1, const Shape& shape2)
 {
     std::vector<Points> points;
 
@@ -99,7 +99,7 @@ Shape MinkowskiSum(const Shape& shape1, const Shape& shape2)
     {
         for (const Vector& vertexPos2 : vertices2)
         {
-            points.push_back(vertexPos1, vertexPos2);
+            points.push_back(vertexPos1 - vertexPos2);
         } 
     } 
 
