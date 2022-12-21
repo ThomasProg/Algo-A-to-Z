@@ -34,6 +34,54 @@ Some games also require **custom collisions** to be optimal.
 *Example : Minecraft only requires collisions between boxes and cylinders. 
 The collision between chunks don't even have to be tested.*
 
+## How:
+
+The collisions will be implemented that way (unless if specified otherwise):
+
+```cpp
+
+struct ShapePair
+{
+    Shape* shape1;
+    Shape* shape2;
+};
+
+class CollisionDetector
+{
+    std::vector<Shape> registeredShapes;
+    BroadPhase broadPhase;
+    NarrowPhase narrowPhase;
+
+    void Register(const Shape& shape)
+    {
+        broadPhase.Register(shape);
+    }
+
+    void Unregister(const Shape& shape)
+    {
+        broadPhase.Unregister(shape);
+    }
+
+    void SimulateCollisions()
+    {
+        // A container of potentially colliding pairs
+        // Could return a std::vector, std::list, etc
+        auto& pairs = broadPhase.GetPotentiallyCollidingPairs();
+
+        for (ShapePair& pair : pairs)
+        {
+            CollisionInfo collisionInfo;
+            if (narrowPhase.AreShapesColliding(pair.shape1, pair.shape2, collisionInfo))
+            {
+                RunPhysicalResponse(pair.shape1, pair.shape2, collisionInfo);
+            }
+        }
+    }
+
+
+};
+```
+
 ## References : 
 
 https://dyn4j.org/2010/01/sat/
