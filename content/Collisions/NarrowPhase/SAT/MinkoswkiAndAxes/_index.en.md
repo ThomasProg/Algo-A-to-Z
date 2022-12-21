@@ -18,13 +18,13 @@ bool TestCollisionsWithSAT(const Shape& shape1, const Shape& shape2)
 {
     std::vector<Vector> axes = GetEveryAxisInTheWholeWorld();
 
-    Shape minkowskySum = shape1 - shape2;
+    Shape minkowskiSum = shape1 - shape2;
 
     for (const Vector& axis : axes)
     {
         // The projection of the origin is 0 on any axis
         // So if the projection of the origin is not in projection of the Minkowski shape:
-        if (minkowskySum.GetPtMaxProj(axis) < 0 || minkowskySum.GetPtMinProj(axis) > 0)
+        if (minkowskiSum.GetPtMaxProj(axis) < 0 || minkowskiSum.GetPtMinProj(axis) > 0)
         {
             return false; 
         }
@@ -55,15 +55,15 @@ To replace GetEveryAxisInTheWholeWorld(), we can just do the following:
 ```cpp
 bool TestCollisionsWithSAT(const Shape& shape1, const Shape& shape2)
 {
-    Shape minkowskySum = shape1 - shape2;
+    Shape minkowskiSum = shape1 - shape2;
 
-    std::vector<Vector> axes = minkowskySum.GetNormals();
+    std::vector<Vector> axes = minkowskiSum.GetNormals();
 
     for (const Vector& axis : axes)
     {
         // The projection of the origin is 0 on any axis
         // So if the projection of the origin is not in projection of the Minkowski shape:
-        if (minkowskySum.GetPtMaxProj(axis) < 0 || minkowskySum.GetPtMinProj(axis) > 0)
+        if (minkowskiSum.GetPtMaxProj(axis) < 0 || minkowskiSum.GetPtMinProj(axis) > 0)
         {
             return false; 
         }
@@ -75,7 +75,7 @@ bool TestCollisionsWithSAT(const Shape& shape1, const Shape& shape2)
 {{% /tab %}}
 {{< /tabs >}}
 
-However, the problem with that is that we have to compute the sum of minkowsky.
+However, the problem with that is that we have to compute the sum of Minkowski.
 
 The obvious way would be to compute possible points and then to create a convex hull around them.\
 A convex hull can be created for any dimension with the QuickHull algorithm.\
@@ -87,7 +87,7 @@ It would then look like this:
 {{< tabs >}}
 {{% tab name="C++" %}}
 ```cpp
-Shape MinkowskySum(const Shape& shape1, const Shape& shape2)
+Shape MinkowskiSum(const Shape& shape1, const Shape& shape2)
 {
     std::vector<Points> points;
 

@@ -29,7 +29,9 @@ struct CollisionInfo
 ```cpp
 void RunPhysicalResponse(Shape* shape1, Shape* shape2, const CollisionInfo& collisionInfo)
 {
-
+    RunCorrection(shape1, shape2, collisionInfo);
+    UpdateVelocity(shape1, shape2, collisionInfo);
+    UpdateAngularVelocity(shape1, shape2, collisionInfo);
 }
 ```
 

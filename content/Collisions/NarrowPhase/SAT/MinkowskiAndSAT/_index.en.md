@@ -132,11 +132,11 @@ $$= \sum ((u_{i} - v_{i}) * p_{i})$$
 
 It means that we can replace our the last code part by:
 ```cpp
-Vector minkowskyPtWithMaxProj = shape1.GetPtMaxProj(axis) - shape2.GetPtMinProj(axis);
-float minkowskySumMaxProj = DotProduct(minkowskyPtWithMaxProj, axis);
+Vector minkowskiPtWithMaxProj = shape1.GetPtMaxProj(axis) - shape2.GetPtMinProj(axis);
+float minkowskiSumMaxProj = DotProduct(minkowskiPtWithMaxProj, axis);
 ```
 
-we just computed a point from the minkowskySum!!!!!!\
+we just computed a point from the minkowskiSum!!!!!!\
 Or rather, if A and B are our shapes, the expression we have is A - B.
 
 We can now show the final code:
@@ -150,15 +150,15 @@ bool TestCollisionsWithSAT(const Shape& shape1, const Shape& shape2)
 
     for (const Vector& axis : axes)
     {
-        Vector minkowskyPtWithMaxProj = shape1.GetPtMaxProj(axis) - shape2.GetPtMinProj(axis);
-        float minkowskySumMaxProj = DotProduct(minkowskyPtWithMaxProj, axis);
+        Vector minkowskiPtWithMaxProj = shape1.GetPtMaxProj(axis) - shape2.GetPtMinProj(axis);
+        float minkowskiSumMaxProj = DotProduct(minkowskiPtWithMaxProj, axis);
 
         // Note that this is the minimum projection instead of the maximum we just computed above
-        Vector minkowskyPtWithMinProj = shape1.GetPtMinProj(axis) - shape2.GetMaxProj(axis);
-        float minkowskySumMinProj = DotProduct(minkowskyPtWithMinProj, axis);
+        Vector minkowskiPtWithMinProj = shape1.GetPtMinProj(axis) - shape2.GetMaxProj(axis);
+        float minkowskiSumMinProj = DotProduct(minkowskiPtWithMinProj, axis);
 
         // If 0 is outside the projection
-        if (minkowskySumMaxProj < 0 || minkowskySumMinProj > 0)
+        if (minkowskiSumMaxProj < 0 || minkowskiSumMinProj > 0)
         {
             return false; 
         }
@@ -178,14 +178,14 @@ Let's explain that.
 
 ## A different point of view
 
-We're doing the minkowski sum A - B.\
+We're doing the Minkowski sum A - B.\
 If the shapes are overlapping, it means that there is atleast 1 point both shapes are sharing.\
 In that case, for that point, A - B would return the origin, since the point from A and B would negate each other.\
-So if there is a collision, the origin should be inside the minkowski shape!\
+So if there is a collision, the origin should be inside the Minkowski shape!\
 However, that just delays the problem...
 
 \
-The minkowski shape is convex since both A and B are convex.\
+The Minkowski shape is convex since both A and B are convex.\
 A point is, in itself, convex.\
 Is there an algorithm capable of determining if there is a collision between 2 convex shapes?\
 Yes!!\
@@ -198,13 +198,13 @@ bool TestCollisionsWithSAT(const Shape& shape1, const Shape& shape2)
 {
     std::vector<Vector> axes = GetEveryAxisInTheWholeWorld();
 
-    Shape minkowskySum = shape1 - shape2;
+    Shape minkowskiSum = shape1 - shape2;
 
     for (const Vector& axis : axes)
     {
         // The projection of the origin is 0 on any axis
         // So if the projection of the origin is not in projection of the Minkowski shape:
-        if (minkowskySum.GetPtMaxProj(axis) < 0 || minkowskySum.GetPtMinProj(axis) > 0)
+        if (minkowskiSum.GetPtMaxProj(axis) < 0 || minkowskiSum.GetPtMinProj(axis) > 0)
         {
             return false; 
         }
@@ -217,7 +217,7 @@ bool TestCollisionsWithSAT(const Shape& shape1, const Shape& shape2)
 {{< /tabs >}}
 
 Note that this code is still doing the same thing as what we had before.\
-Here, the minkowsky shape is just computed before the loop, and then projecting it, instead of getting the projections on the fly.\
+Here, the Minkowski shape is just computed before the loop, and then projecting it, instead of getting the projections on the fly.\
 The condition also became very straightforward.
 
 ## Conclusion
@@ -227,7 +227,7 @@ Let A and B be two closed convex shapes.
 We just proved that:\
 **"If two convex shapes do not collide, then, a hyperplane can separate them."**\
 Is strictly equivalent to:\
-**"If the shapes are not colliding, then, the origin is inside the minkowsky sum A - B."**
+**"If the shapes are not colliding, then, the origin is inside the Minkowski sum A - B."**
 
 \
 And a convex shape is defined by its tangent hyperplanes.\

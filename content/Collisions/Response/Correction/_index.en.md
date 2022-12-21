@@ -20,7 +20,7 @@ The easy way is just to reset the shapes back at the previous frame.
 
 ```cpp
 
-void RunPhysicalResponse(const Shape* shape1, const Shape* shape2, const CollisionInfo& it)
+void RunCorrection(const Shape* shape1, const Shape* shape2, const CollisionInfo& it)
 {
     shape1->position = shape1->lastPosition;
     shape1->rotation = shape1->lastRotation;
