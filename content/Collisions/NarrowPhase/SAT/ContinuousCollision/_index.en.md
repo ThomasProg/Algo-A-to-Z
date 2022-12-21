@@ -9,7 +9,10 @@ mathJaxInitialize = "{ \"chtml\": { \"displayAlign\": \"left\" } }"
 
 ## Continuous collision for non rotating shapes
 
-To increase the precision, we could:
+If the shapes don't have any angular velocity, we can consider their separating axis never change.\
+We have both shapes projected on an axis; we just have to take time into account, and find the moment their ranges intersect.\
+This means we have a continuous collision... but only when the shapes are not rotating.\
+The lower the rotation is, the more precise the collision is. 
 
 ```cpp
 bool SimulatePhysics(Shape& shape1, Shape& shape2, CollisionInfo& collisionInfo)
@@ -20,10 +23,17 @@ bool SimulatePhysics(Shape& shape1, Shape& shape2, CollisionInfo& collisionInfo)
         float speed1 = DotProduct(shape1.velocity, satCollisionInfo.normal);
         float speed2 = DotProduct(shape2.velocity, satCollisionInfo.normal);
 
+        // We test if there is a collision with :  
+        //
         // if (!(maxp1 > minp2 && maxp2 > minp1))
-        // becomes : 
+
+        // It becomes the following once we take the time into account, 
+        // and since we consider the shape isn't rotating:
+        //
         // if (!(maxp1 - speed1 * t > minp2 - speed2 * t && maxp2 - speed2 * t > minp1 - speed1 * t))
-        // Equations : 
+
+        // We don't care about the inequality, we just want t for when there is a collision, so:
+        //
         // maxp1 - speed1 * t = minp2 - speed2 * t
         // maxp1 - minp2 = speed1 * t - speed2 * t
         // maxp1 - minp2 = (speed1 - speed2) * t
@@ -31,6 +41,7 @@ bool SimulatePhysics(Shape& shape1, Shape& shape2, CollisionInfo& collisionInfo)
         // t1 = (maxp1 - minp2) / (speed1 - speed2) 
         //
         // And for the other:
+        //
         // maxp2 - speed2 * t > minp1 - speed1 * t)
         // t2 = (maxp2 - minp1) / (speed2 - speed1)
 
@@ -54,11 +65,6 @@ bool SimulatePhysics(Shape& shape1, Shape& shape2, CollisionInfo& collisionInfo)
     return false;
 }
 ```
-
-If the shapes don't have any angular velocity, we can consider their separating axis never change.\
-We have both shapes projected on an axis; we just have to take time into account, and find the moment their ranges intersect.\
-This means we have a continuous collision... but only when the shapes are not rotating.\
-The lower the rotation is, the more precise the collision is. 
 
 ## Expansive Continuous collision 
 

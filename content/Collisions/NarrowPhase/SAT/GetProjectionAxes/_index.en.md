@@ -188,30 +188,11 @@ def GetPotentialSeparatingAxes(shape1, shape2):
 
 ### Generalization :
 
-Let's define hyperplanes dimensions:
-- A line is a 2D hyperplane
-- A plane is a 3D hyperplane
-- etc
-
-For simplicity, let H(N) be a N dimensional hyperplane.
-
-Instead of hyperplanes, we could say that H(N) is a subspace of dimension N - 1
-
-Let D be the dimension of the space.\
-We have to test:
-- H(D) / H(i), i <= D
-- H(D-1) / H(D) 
-- H(D-1) / H(D-1) 
-- etc
-
-#### H(D) / H(i), i <= D
-
-We can just take the normal of H(D).
-
-#### H(i) / H(j)
-
-As long as the direct sum of H(i) and H(j) is equal to H(N), we probably can't discard that case.\
-Same as before, we need to compute the axis of the shortest path between the two hyperplanes.
+We just have to get the axis of the shortest path between the two shapes.\
+That's easy.\
+Or not.\
+It is actually quite difficult... and for that, it is easier to see the algorithm with another perspective.\
+Read the [MinkowskiAndSAT]( {{< ref "../MinkowskiAndSAT/_index.en.md" >}} ) and then the [MinkoswkiAndAxes]( {{< ref "../MinkoswkiAndAxes/_index.en.md" >}} ) parts.
 
 ## Parallel axes optimization
 

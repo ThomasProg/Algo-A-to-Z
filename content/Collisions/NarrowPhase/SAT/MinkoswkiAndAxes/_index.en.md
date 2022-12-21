@@ -78,7 +78,8 @@ bool TestCollisionsWithSAT(const Shape& shape1, const Shape& shape2)
 However, the problem with that is that we have to compute the sum of minkowsky.
 
 The obvious way would be to compute possible points and then to create a convex hull around them.\
-A convex hull can be created for any dimension with the QuickHull algorithm.
+A convex hull can be created for any dimension with the QuickHull algorithm.\
+An implementation is available here : https://github.com/akuukka/quickhull/blob/master/QuickHull.cpp
 
 \
 It would then look like this:
