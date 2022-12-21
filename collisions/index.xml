@@ -6,4 +6,4 @@ Requirements: For this phase to be useful, it must return :</description></item>
 If we&amp;rsquo;re using reality based physics, then we have to apply physics laws.
 In the following chapters, we will see how to update things appropriately.
 For the following chapters, we consider the narrow phase is returning a CollisionInfo:
-struct CollisionInfo { float mtv; // Minimum Translation Vector Vec3 collisionPoint; Vec3 normal; }; void RunPhysicalResponse(Shape* shape1, Shape* shape2, const CollisionInfo&amp;amp; collisionInfo) { } Index: Velocity Angular Velocity Correction</description></item></channel></rss>
+struct CollisionInfo { float mtv; // Minimum Translation Vector Vec3 collisionPoint; Vec3 normal; }; void RunPhysicalResponse(Shape* shape1, Shape* shape2, const CollisionInfo&amp;amp; collisionInfo) { RunCorrection(shape1, shape2, collisionInfo); UpdateVelocity(shape1, shape2, collisionInfo); UpdateAngularVelocity(shape1, shape2, collisionInfo); } Index: Velocity Angular Velocity Correction</description></item></channel></rss>

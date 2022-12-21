@@ -61,7 +61,7 @@ After the collision has been detected, the two shapes would already be overlappi
 The imprecision can be “corrected in a few ways.
 The goal of this page is to show you different ways of doing it.
 The easy way The easy way is just to reset the shapes back at the previous frame.
-void RunPhysicalResponse(const Shape* shape1, const Shape* shape2, const CollisionInfo\u0026 it) { shape1-\u003eposition = shape1-\u003elastPosition; shape1-\u003erotation = shape1-\u003elastRotation; shape2-\u003eposition = shape2-\u003elastPosition; shape2-\u003erotation = shape2-\u003elastRotation; } Pros:
+void RunCorrection(const Shape* shape1, const Shape* shape2, const CollisionInfo\u0026 it) { shape1-\u003eposition = shape1-\u003elastPosition; shape1-\u003erotation = shape1-\u003elastRotation; shape2-\u003eposition = shape2-\u003elastPosition; shape2-\u003erotation = shape2-\u003elastRotation; } Pros:
 This gives stable Cons:
 This is not how real physics work `,description:"",tags:null,title:"Correction",uri:"/collisions/response/correction/index.html"},{content:` Projecting a point The dot product can be used to project a point on an axis. Python def ProjectPointOnAxis(point, axis) -\u003e float: return DotProduct(point, axis); 2D Dot Product Python def DotProduct(v1, v2) -\u003e float: return v1.x * v2.x + v1.y * v2.y 3D Dot Product Python def DotProduct(v1, v2) -\u003e float: return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z Dot Product Generalization Python def DotProduct(v1, v2) -\u003e float: nbDimensions = v1.GetDimension() total = 0 for i in range(nbDimensions): total += v1.coords[i] * v2.coords[i] return total Projecting a circle, sphere, or hypersphere To simulate an hypersphere, we usually make models with a lot of triangles and vertices.
 This is one of the best ways we know to render hyperspheres with other objects.
@@ -128,7 +128,7 @@ The point of collision The normal of the impact The penetrated distance between 
 If we’re using reality based physics, then we have to apply physics laws.
 In the following chapters, we will see how to update things appropriately.
 For the following chapters, we consider the narrow phase is returning a CollisionInfo:
-struct CollisionInfo { float mtv; // Minimum Translation Vector Vec3 collisionPoint; Vec3 normal; }; void RunPhysicalResponse(Shape* shape1, Shape* shape2, const CollisionInfo\u0026 collisionInfo) { } Index: Velocity Angular Velocity Correction `,description:"",tags:null,title:"Response",uri:"/collisions/response/index.html"},{content:" Separating Axis Theorem Summary : Theory In practice Get Projection Axes Projecting Shapes Getting output data Precomputing data Is Inside Minkowski And SAT Minkowski And Axes Continuous collision ",description:"",tags:["Collisions","Narrow Phase","Geometry"],title:"SAT",uri:"/collisions/narrowphase/sat/index.html"},{content:` Testing the same shape multiple times Let’s supposed we test 1 shape with 10 other shapes. Every time we will test a collision, we will project the 1st shape onto the axes. However, half of the axes will stay the same, because half of the axes will be computed from that 1st shape. That means we can precompute both the axes, but also the projections of the shape on half of the axes between the broadphase and the narrow phase.
+struct CollisionInfo { float mtv; // Minimum Translation Vector Vec3 collisionPoint; Vec3 normal; }; void RunPhysicalResponse(Shape* shape1, Shape* shape2, const CollisionInfo\u0026 collisionInfo) { RunCorrection(shape1, shape2, collisionInfo); UpdateVelocity(shape1, shape2, collisionInfo); UpdateAngularVelocity(shape1, shape2, collisionInfo); } Index: Velocity Angular Velocity Correction `,description:"",tags:null,title:"Response",uri:"/collisions/response/index.html"},{content:" Separating Axis Theorem Summary : Theory In practice Get Projection Axes Projecting Shapes Getting output data Precomputing data Is Inside Minkowski And SAT Minkowski And Axes Continuous collision ",description:"",tags:["Collisions","Narrow Phase","Geometry"],title:"SAT",uri:"/collisions/narrowphase/sat/index.html"},{content:` Testing the same shape multiple times Let’s supposed we test 1 shape with 10 other shapes. Every time we will test a collision, we will project the 1st shape onto the axes. However, half of the axes will stay the same, because half of the axes will be computed from that 1st shape. That means we can precompute both the axes, but also the projections of the shape on half of the axes between the broadphase and the narrow phase.
 Warning The previous algorithm would have returned as soon as it detects there are no collisions. This means less data could have been computed. By precomputing this data, we asssume shapes most likely collide to be efficient. This is one of the reasons the broadphase is so important. Otherwise, it could end up taking more performance instead.
 Static Objects When objects are moving, we have to compute axes in world space again every frame.
 However, when objects are not moving (i.e. static), their world position do not change.
@@ -159,48 +159,48 @@ DotProduct(shape1.GetPtMaxProj(axis), axis) - DotProduct(shape2.GetPtMinProj(axi
 Let u, v and p be vectors of N dimension.
 We have:
 $$u \\cdot p - v \\cdot p$$ $$= \\sum (u_{i} * p_{i}) - \\sum (v_{i} * p_{i})$$ $$= \\sum (u_{i} * p_{i} - v_{i} * p_{i})$$ $$= \\sum ((u_{i} - v_{i}) * p_{i})$$It means that we can replace our the last code part by:
-Vector minkowskyPtWithMaxProj = shape1.GetPtMaxProj(axis) - shape2.GetPtMinProj(axis); float minkowskySumMaxProj = DotProduct(minkowskyPtWithMaxProj, axis); we just computed a point from the minkowskySum!!!!!!
+Vector minkowskiPtWithMaxProj = shape1.GetPtMaxProj(axis) - shape2.GetPtMinProj(axis); float minkowskiSumMaxProj = DotProduct(minkowskiPtWithMaxProj, axis); we just computed a point from the minkowskiSum!!!!!!
 Or rather, if A and B are our shapes, the expression we have is A - B.
 We can now show the final code:
-C++ bool TestCollisionsWithSAT(const Shape\u0026 shape1, const Shape\u0026 shape2) { std::vector\u003cVector\u003e axes = GetEveryAxisInTheWholeWorld(); for (const Vector\u0026 axis : axes) { Vector minkowskyPtWithMaxProj = shape1.GetPtMaxProj(axis) - shape2.GetPtMinProj(axis); float minkowskySumMaxProj = DotProduct(minkowskyPtWithMaxProj, axis); // Note that this is the minimum projection instead of the maximum we just computed above Vector minkowskyPtWithMinProj = shape1.GetPtMinProj(axis) - shape2.GetMaxProj(axis); float minkowskySumMinProj = DotProduct(minkowskyPtWithMinProj, axis); // If 0 is outside the projection if (minkowskySumMaxProj \u003c 0 || minkowskySumMinProj \u003e 0) { return false; } } return true; } REVELATION!!!!!
+C++ bool TestCollisionsWithSAT(const Shape\u0026 shape1, const Shape\u0026 shape2) { std::vector\u003cVector\u003e axes = GetEveryAxisInTheWholeWorld(); for (const Vector\u0026 axis : axes) { Vector minkowskiPtWithMaxProj = shape1.GetPtMaxProj(axis) - shape2.GetPtMinProj(axis); float minkowskiSumMaxProj = DotProduct(minkowskiPtWithMaxProj, axis); // Note that this is the minimum projection instead of the maximum we just computed above Vector minkowskiPtWithMinProj = shape1.GetPtMinProj(axis) - shape2.GetMaxProj(axis); float minkowskiSumMinProj = DotProduct(minkowskiPtWithMinProj, axis); // If 0 is outside the projection if (minkowskiSumMaxProj \u003c 0 || minkowskiSumMinProj \u003e 0) { return false; } } return true; } REVELATION!!!!!
 There was an imposter among us!
 And it was Minkowski!!!
 Let’s explain that.
-A different point of view We’re doing the minkowski sum A - B.
+A different point of view We’re doing the Minkowski sum A - B.
 If the shapes are overlapping, it means that there is atleast 1 point both shapes are sharing.
 In that case, for that point, A - B would return the origin, since the point from A and B would negate each other.
-So if there is a collision, the origin should be inside the minkowski shape!
+So if there is a collision, the origin should be inside the Minkowski shape!
 However, that just delays the problem…
-The minkowski shape is convex since both A and B are convex.
+The Minkowski shape is convex since both A and B are convex.
 A point is, in itself, convex.
 Is there an algorithm capable of determining if there is a collision between 2 convex shapes?
 Yes!!
 The Separating Axis Theorem is!!!
-C++ bool TestCollisionsWithSAT(const Shape\u0026 shape1, const Shape\u0026 shape2) { std::vector\u003cVector\u003e axes = GetEveryAxisInTheWholeWorld(); Shape minkowskySum = shape1 - shape2; for (const Vector\u0026 axis : axes) { // The projection of the origin is 0 on any axis // So if the projection of the origin is not in projection of the Minkowski shape: if (minkowskySum.GetPtMaxProj(axis) \u003c 0 || minkowskySum.GetPtMinProj(axis) \u003e 0) { return false; } } return true; } Note that this code is still doing the same thing as what we had before.
-Here, the minkowsky shape is just computed before the loop, and then projecting it, instead of getting the projections on the fly.
+C++ bool TestCollisionsWithSAT(const Shape\u0026 shape1, const Shape\u0026 shape2) { std::vector\u003cVector\u003e axes = GetEveryAxisInTheWholeWorld(); Shape minkowskiSum = shape1 - shape2; for (const Vector\u0026 axis : axes) { // The projection of the origin is 0 on any axis // So if the projection of the origin is not in projection of the Minkowski shape: if (minkowskiSum.GetPtMaxProj(axis) \u003c 0 || minkowskiSum.GetPtMinProj(axis) \u003e 0) { return false; } } return true; } Note that this code is still doing the same thing as what we had before.
+Here, the Minkowski shape is just computed before the loop, and then projecting it, instead of getting the projections on the fly.
 The condition also became very straightforward.
 Conclusion Let A and B be two closed convex shapes.
 We just proved that:
 “If two convex shapes do not collide, then, a hyperplane can separate them.”
 Is strictly equivalent to:
-“If the shapes are not colliding, then, the origin is inside the minkowsky sum A - B.”
+“If the shapes are not colliding, then, the origin is inside the Minkowski sum A - B.”
 And a convex shape is defined by its tangent hyperplanes.
 So we can just verify if the origin is “inside” the hyperplanes.
 That proof works for any euclidean space!!!
 `,description:"",tags:null,title:"Minkowski And SAT",uri:"/collisions/narrowphase/sat/minkowskiandsat/index.html"},{content:` The basic SAT algorithm We saw previously that the SAT could be explained using the Minkowski sum.
-C++ bool TestCollisionsWithSAT(const Shape\u0026 shape1, const Shape\u0026 shape2) { std::vector\u003cVector\u003e axes = GetEveryAxisInTheWholeWorld(); Shape minkowskySum = shape1 - shape2; for (const Vector\u0026 axis : axes) { // The projection of the origin is 0 on any axis // So if the projection of the origin is not in projection of the Minkowski shape: if (minkowskySum.GetPtMaxProj(axis) \u003c 0 || minkowskySum.GetPtMinProj(axis) \u003e 0) { return false; } } return true; } The algorithm isn’t usable as it is, since GetEveryAxisInTheWholeWorld() is slow… and even slower for higher dimensions.
+C++ bool TestCollisionsWithSAT(const Shape\u0026 shape1, const Shape\u0026 shape2) { std::vector\u003cVector\u003e axes = GetEveryAxisInTheWholeWorld(); Shape minkowskiSum = shape1 - shape2; for (const Vector\u0026 axis : axes) { // The projection of the origin is 0 on any axis // So if the projection of the origin is not in projection of the Minkowski shape: if (minkowskiSum.GetPtMaxProj(axis) \u003c 0 || minkowskiSum.GetPtMinProj(axis) \u003e 0) { return false; } } return true; } The algorithm isn’t usable as it is, since GetEveryAxisInTheWholeWorld() is slow… and even slower for higher dimensions.
 However, do you remember how we previously got the axes the 2D case, by just taking the normals?
 It doesn’t usually work in higher dimensions for two convex shapes…
 However It does work here.
 The same as previously, we want to know the shortest path the shape and the point.
 However, in the case, there is only one case possible: the path will always be a normal of the shape!
 Code : The obvious way To replace GetEveryAxisInTheWholeWorld(), we can just do the following:
-C++ bool TestCollisionsWithSAT(const Shape\u0026 shape1, const Shape\u0026 shape2) { Shape minkowskySum = shape1 - shape2; std::vector\u003cVector\u003e axes = minkowskySum.GetNormals(); for (const Vector\u0026 axis : axes) { // The projection of the origin is 0 on any axis // So if the projection of the origin is not in projection of the Minkowski shape: if (minkowskySum.GetPtMaxProj(axis) \u003c 0 || minkowskySum.GetPtMinProj(axis) \u003e 0) { return false; } } return true; } However, the problem with that is that we have to compute the sum of minkowsky.
+C++ bool TestCollisionsWithSAT(const Shape\u0026 shape1, const Shape\u0026 shape2) { Shape minkowskiSum = shape1 - shape2; std::vector\u003cVector\u003e axes = minkowskiSum.GetNormals(); for (const Vector\u0026 axis : axes) { // The projection of the origin is 0 on any axis // So if the projection of the origin is not in projection of the Minkowski shape: if (minkowskiSum.GetPtMaxProj(axis) \u003c 0 || minkowskiSum.GetPtMinProj(axis) \u003e 0) { return false; } } return true; } However, the problem with that is that we have to compute the sum of Minkowski.
 The obvious way would be to compute possible points and then to create a convex hull around them.
 A convex hull can be created for any dimension with the QuickHull algorithm.
 An implementation is available here : https://github.com/akuukka/quickhull/blob/master/QuickHull.cpp
 It would then look like this:
-C++ Shape MinkowskySum(const Shape\u0026 shape1, const Shape\u0026 shape2) { std::vector\u003cPoints\u003e points; std::vector\u003cPoints\u003e\u0026 vertices1 = shape1.GetVertices(); std::vector\u003cPoints\u003e\u0026 vertices2 = shape2.GetVertices(); points.reserve(vertices1.size() + vertices2.size()); for (const Vector\u0026 vertexPos1 : vertices1) { for (const Vector\u0026 vertexPos2 : vertices2) { points.push_back(vertexPos1, vertexPos2); } } return Shape(QuickHull(points)); } Optimizing We could try using the property of convex shapes to :
+C++ Shape MinkowskiSum(const Shape\u0026 shape1, const Shape\u0026 shape2) { std::vector\u003cPoints\u003e points; std::vector\u003cPoints\u003e\u0026 vertices1 = shape1.GetVertices(); std::vector\u003cPoints\u003e\u0026 vertices2 = shape2.GetVertices(); points.reserve(vertices1.size() + vertices2.size()); for (const Vector\u0026 vertexPos1 : vertices1) { for (const Vector\u0026 vertexPos2 : vertices2) { points.push_back(vertexPos1, vertexPos2); } } return Shape(QuickHull(points)); } Optimizing We could try using the property of convex shapes to :
 reduce the number of points as the source of the convex hull compute the convex hull even faster with a different algorithm (or maybe even directly) Another thing we could do is, rather than computing the convex hull, we could try directly computing the normals.
 After all, that’s what we are doing already in 2D and in 3D.
 These possible optimizations have not been proven yet, and it’s not sure it is actually possible.
